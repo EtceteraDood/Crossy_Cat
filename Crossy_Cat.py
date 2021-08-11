@@ -15,21 +15,58 @@ class Game:
         self.width = width
         self.height = height
 
-        game_screen = pygame.display.set_mode((width, height))
-        game_screen.fill(WHITE_BACKGROUNG)
+        self.game_screen = pygame.display.set_mode((width, height))
+        self.game_screen.fill(WHITE_BACKGROUNG)
         pygame.display.set_caption(title)
 
     def run_game(self):
         is_gameover = False
+        direction = 0
+
+        player_character = PlayerCharacter('Assets\Black Cat.png', 275, 500, 50, 50)
 
         # Main game loop
         while not is_gameover:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: is_gameover = True
-            print(event)  # Console event logger (Can be deleted)
+                elif event.type == pygame.KEYDOWN:  # Detect when a key is pressed down
+                    if event.key == pygame.K_UP: direction = 1
+                    elif event.key == pygame.K_DOWN: direction = -1
+                elif event.type == pygame.KEYUP:  # Detect when a key is released
+                    if event.key == pygame.K_UP or event.key == pygame.K_DOWN: direction = 0
+                print(event)  # Console event logger (Can be deleted)
+
+            # Redraw the screen to be a blank window
+            self.game_screen.fill(WHITE_BACKGROUNG)
+            # Update the player position
+            player_character.move(direction)
+            # Draw the player at the new position
+            player_character.draw(self.game_screen)
 
             pygame.display.update()  # Update all game graphics
             clock.tick(self.FPS)  # Updates everything within the game
+
+class GameObjects:
+    def __init__(self, image_path, x, y, width, height):
+        object_image = pygame.image.load(image_path)
+        self.image = pygame.transform.scale(object_image, (width, height))  #Scale the image up
+        self.x_pos = x
+        self.y_pos = y
+        self.width = width
+        self.height = height
+
+    def draw(self, background):
+        background.blit(self.image, (self.x_pos, self.y_pos))
+
+class PlayerCharacter(GameObjects):
+    SPEED = 5
+
+    def __init__(self, image_path, x, y, width, height):
+        super().__init__(image_path, x, y, width, height)
+
+    def move(self, direction):
+        if direction > 0: self.y_pos -= self.SPEED  # UP
+        elif direction < 0: self.y_pos += self.SPEED  # DOWN
 
 pygame.init()
 

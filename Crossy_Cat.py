@@ -24,6 +24,7 @@ class Game:
         direction = 0
 
         player_character = PlayerCharacter('Assets\Black Cat.png', 275, 500, 50, 50)
+        enemy_00 = EnemyCharacter('Assets\Spike Ball.png', 20, 300, 50, 50)
 
         # Main game loop
         while not is_gameover:
@@ -39,9 +40,12 @@ class Game:
             # Redraw the screen to be a blank window
             self.game_screen.fill(WHITE_BACKGROUNG)
             # Update the player position
-            player_character.move(direction)
+            player_character.move(direction, self.height)
             # Draw the player at the new position
             player_character.draw(self.game_screen)
+            # Move and draw the enemy character(s)
+            enemy_00.move(self.width)
+            enemy_00.draw(self.game_screen)
 
             pygame.display.update()  # Update all game graphics
             clock.tick(self.FPS)  # Updates everything within the game
@@ -64,9 +68,23 @@ class PlayerCharacter(GameObjects):
     def __init__(self, image_path, x, y, width, height):
         super().__init__(image_path, x, y, width, height)
 
-    def move(self, direction):
+    def move(self, direction, max_height):
         if direction > 0: self.y_pos -= self.SPEED  # UP
         elif direction < 0: self.y_pos += self.SPEED  # DOWN
+
+        if self.y_pos >= max_height - 20: self.y_pos = max_height - 20  # Bottom bounds
+
+class EnemyCharacter(GameObjects):
+    SPEED = 5
+
+    def __init__(self, image_path, x, y, width, height):
+        super().__init__(image_path, x, y, width, height)
+
+    def move(self, max_width):
+        if self.x_pos <= 20: self.SPEED = abs(self.SPEED)
+        elif self.x_pos >= max_width -20: self.SPEED = -abs(self.SPEED)
+        self.x_pos += self.SPEED
+
 
 pygame.init()
 

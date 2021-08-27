@@ -24,6 +24,7 @@ class Game:
 
     def run_game(self):
         is_gameover = False
+        winner = False
         direction = 0
 
         player_character = PlayerCharacter('Assets\Black Cat.png', 275, 500, 50, 50)
@@ -55,8 +56,20 @@ class Game:
             enemy_00.move(self.width)
             enemy_00.draw(self.game_screen)
 
+            # Game winning and losing conditions
+            if player_character.collision_detection(enemy_00):
+                is_gameover = True
+                winner = False
+            elif player_character.collision_detection(pizza):
+                is_gameover = True
+                winner = True
+
             pygame.display.update()  # Update all game graphics
             clock.tick(self.FPS)  # Updates everything within the game
+
+        # Restart the game if you win otherwise exit the game loop and game
+        if winner: self.run_game()
+        else: return
 
 class GameObjects:
     def __init__(self, image_path, x, y, width, height):
@@ -81,6 +94,14 @@ class PlayerCharacter(GameObjects):
         elif direction < 0: self.y_pos += self.SPEED  # DOWN
 
         if self.y_pos >= max_height - 20: self.y_pos = max_height - 20  # Bottom bounds
+
+    def collision_detection(self, other_object):
+        if self.y_pos > other_object.y_pos + other_object.height: return False
+        elif self.y_pos + self.height < other_object.y_pos: return False
+
+        if self.x_pos > other_object.x_pos + other_object.width: return False
+        elif self.x_pos + self.width < other_object.x_pos: return False
+        return True
 
 class EnemyCharacter(GameObjects):
     SPEED = 5

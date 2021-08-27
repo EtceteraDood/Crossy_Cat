@@ -5,7 +5,10 @@ GAME_TITLE = "Crossy Cat"
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
 WHITE_BACKGROUNG = (255, 255, 255)
+BLACK_COLOR = (0, 0, 0)
 clock = pygame.time.Clock()
+pygame.font.init()
+font = pygame.font.SysFont('comicsans', 75)
 
 class Game:
     FPS = 60
@@ -22,14 +25,26 @@ class Game:
         background_image = pygame.image.load(image_path)
         self.image = pygame.transform.scale(background_image, (width, height))
 
-    def run_game(self):
+    def run_game(self, level):
         is_gameover = False
         winner = False
         direction = 0
 
         player_character = PlayerCharacter('Assets\Black Cat.png', 275, 500, 50, 50)
-        enemy_00 = EnemyCharacter('Assets\Spike Ball.png', 20, 300, 50, 50)
+
+        enemy_00 = EnemyCharacter('Assets\Spike Ball.png', 20, 425, 50, 50)
+        enemy_00.SPEED *= level
+        enemy_01 = EnemyCharacter('Assets\Spike Ball.png', self.width - 40, 350, 50, 50)
+        enemy_01.SPEED *= level
+        enemy_02 = EnemyCharacter('Assets\Spike Ball.png', 20, 275, 50, 50)
+        enemy_02.SPEED *= level
+        enemy_03 = EnemyCharacter('Assets\Spike Ball.png', self.width - 40, 160, 50, 50)
+        enemy_03.SPEED *= level
+        enemy_04 = EnemyCharacter('Assets\Spike Ball.png', 20, 110, 50, 50)  # Goal Protector
+        enemy_04.SPEED *= level
+
         pizza = GameObjects('Assets\Pizza.gif', 275, 25, 50, 50)
+        enemies = [enemy_00, enemy_01, enemy_02, enemy_03, enemy_04]
 
         # Main game loop
         while not is_gameover:
@@ -55,12 +70,32 @@ class Game:
             # Move and draw the enemy character(s)
             enemy_00.move(self.width)
             enemy_00.draw(self.game_screen)
+            # Add more enemies as you progress farther in the game
+            if level > 1.5:
+                enemy_02.move(self.width)
+                enemy_02.draw(self.game_screen)
+            if level > 2:
+                enemy_04.move(self.width)
+                enemy_04.draw(self.game_screen)
+            if level > 2.5:
+                enemy_01.move(self.width)
+                enemy_01.draw(self.game_screen)
+            if level > 3:
+                enemy_03.move(self.width)
+                enemy_03.draw(self.game_screen)
 
             # Game winning and losing conditions
-            if player_character.collision_detection(enemy_00):
-                is_gameover = True
-                winner = False
-            elif player_character.collision_detection(pizza):
+            for enemy in enemies:
+                if player_character.collision_detection(enemy):
+                    is_gameover = True
+                    winner = False
+                    text = font.render('Game Over', True, BLACK_COLOR)
+                    self.game_screen.blit(text, (180, 270))
+                    pygame.display.update()
+                    clock.tick(1)
+                    break
+            
+            if player_character.collision_detection(pizza):
                 is_gameover = True
                 winner = True
 
@@ -68,7 +103,7 @@ class Game:
             clock.tick(self.FPS)  # Updates everything within the game
 
         # Restart the game if you win otherwise exit the game loop and game
-        if winner: self.run_game()
+        if winner: self.run_game(level + .1)
         else: return
 
 class GameObjects:
@@ -118,7 +153,7 @@ class EnemyCharacter(GameObjects):
 pygame.init()
 
 new_game = Game('Assets\Background.png', GAME_TITLE, SCREEN_WIDTH, SCREEN_HEIGHT)
-new_game.run_game()
+new_game.run_game(1)
 
 # Quit pygame and the program
 pygame.quit()

@@ -10,7 +10,7 @@ clock = pygame.time.Clock()
 class Game:
     FPS = 60
 
-    def __init__(self, title, width, height):
+    def __init__(self, image_path, title, width, height):
         self.title = title
         self.width = width
         self.height = height
@@ -19,12 +19,16 @@ class Game:
         self.game_screen.fill(WHITE_BACKGROUNG)
         pygame.display.set_caption(title)
 
+        background_image = pygame.image.load(image_path)
+        self.image = pygame.transform.scale(background_image, (width, height))
+
     def run_game(self):
         is_gameover = False
         direction = 0
 
         player_character = PlayerCharacter('Assets\Black Cat.png', 275, 500, 50, 50)
         enemy_00 = EnemyCharacter('Assets\Spike Ball.png', 20, 300, 50, 50)
+        pizza = GameObjects('Assets\Pizza.gif', 275, 25, 50, 50)
 
         # Main game loop
         while not is_gameover:
@@ -39,6 +43,10 @@ class Game:
 
             # Redraw the screen to be a blank window
             self.game_screen.fill(WHITE_BACKGROUNG)
+            # Draw the background image
+            self.game_screen.blit(self.image, (0, 0))
+            # Draw the forbidden pizza
+            pizza.draw(self.game_screen)
             # Update the player position
             player_character.move(direction, self.height)
             # Draw the player at the new position
@@ -88,7 +96,7 @@ class EnemyCharacter(GameObjects):
 
 pygame.init()
 
-new_game = Game(GAME_TITLE, SCREEN_WIDTH, SCREEN_HEIGHT)
+new_game = Game('Assets\Background.png', GAME_TITLE, SCREEN_WIDTH, SCREEN_HEIGHT)
 new_game.run_game()
 
 # Quit pygame and the program

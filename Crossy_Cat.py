@@ -30,17 +30,17 @@ class Game:
         winner = False
         direction = 0
 
-        player_character = PlayerCharacter('Assets\Black Cat.png', 275, 500, 50, 50)
+        player_character = PlayerCharacter('Assets\BlackCat.png', 275, 500, 50, 50)
 
-        enemy_00 = EnemyCharacter('Assets\Spike Ball.png', 20, 425, 50, 50)
+        enemy_00 = EnemyCharacter('Assets\SpikeBall.png', 20, 425, 50, 50)
         enemy_00.SPEED *= level
-        enemy_01 = EnemyCharacter('Assets\Spike Ball.png', self.width - 40, 350, 50, 50)
+        enemy_01 = EnemyCharacter('Assets\SpikeBall.png', self.width - 40, 350, 50, 50)
         enemy_01.SPEED *= level
-        enemy_02 = EnemyCharacter('Assets\Spike Ball.png', 20, 275, 50, 50)
+        enemy_02 = EnemyCharacter('Assets\SpikeBall.png', 20, 275, 50, 50)
         enemy_02.SPEED *= level
-        enemy_03 = EnemyCharacter('Assets\Spike Ball.png', self.width - 40, 160, 50, 50)
+        enemy_03 = EnemyCharacter('Assets\SpikeBall.png', self.width - 40, 160, 50, 50)
         enemy_03.SPEED *= level
-        enemy_04 = EnemyCharacter('Assets\Spike Ball.png', 20, 110, 50, 50)  # Goal Protector
+        enemy_04 = EnemyCharacter('Assets\SpikeBall.png', 20, 110, 50, 50)  # Goal Protector
         enemy_04.SPEED *= level
 
         pizza = GameObjects('Assets\Pizza.gif', 275, 25, 50, 50)
